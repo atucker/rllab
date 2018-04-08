@@ -1,9 +1,6 @@
 import numpy as np
 import scipy
 import scipy.signal
-import theano.tensor.nnet
-import theano.tensor as TT
-import theano.tensor.extra_ops
 from collections import OrderedDict
 
 
@@ -35,6 +32,7 @@ def softmax(x):
 
 
 def softmax_sym(x):
+    import theano.tensor.nnet
     return theano.tensor.nnet.softmax(x)
 
 
@@ -72,6 +70,7 @@ def to_onehot_n(inds, dim):
 
 
 def to_onehot_sym(ind, dim):
+    import theano.tensor.extra_ops
     assert ind.ndim == 1
     return theano.tensor.extra_ops.to_one_hot(ind, dim)
 
@@ -91,6 +90,7 @@ def normalize_updates(old_mean, old_std, new_mean, new_std, old_W, old_b):
     Compute the updates for normalizing the last (linear) layer of a neural
     network
     """
+    import theano.tensor as TT
     # Make necessary transformation so that
     # (W_old * h + b_old) * std_old + mean_old == \
     #   (W_new * h + b_new) * std_new + mean_new
