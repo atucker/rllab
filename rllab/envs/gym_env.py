@@ -65,9 +65,12 @@ class GymEnv(Env, Serializable):
                 log_dir = os.path.join(logger.get_snapshot_dir(), "gym_log")
         Serializable.quick_init(self, locals())
 
-        env = gym.envs.make(env_name)
+        if isinstance(env_name, gym.Env):
+            env = env_name
+        else:
+            env = gym.envs.make(env_name)
         self.env = env
-        self.env_id = env.spec.id
+        self.env_id = env.spec.id if env.spec is not None else None
 
         assert not (not record_log and record_video)
 
@@ -86,7 +89,7 @@ class GymEnv(Env, Serializable):
         logger.log("observation space: {}".format(self._observation_space))
         self._action_space = convert_gym_space(env.action_space)
         logger.log("action space: {}".format(self._action_space))
-        self._horizon = env.spec.tags['wrapper_config.TimeLimit.max_episode_steps']
+        self._horizon = env._max_episode_steps
         self._log_dir = log_dir
         self._force_reset = force_reset
 
