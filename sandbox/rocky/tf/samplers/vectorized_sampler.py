@@ -63,8 +63,15 @@ class VectorizedSampler(BaseSampler):
 
             t = time.time()
 
-            agent_infos = tensor_utils.split_tensor_dict_list(agent_infos)
-            env_infos = tensor_utils.split_tensor_dict_list(env_infos)
+            try:
+                agent_infos = tensor_utils.split_tensor_dict_list(agent_infos)
+            except AttributeError:
+                agent_infos = None
+            try:
+                env_infos = tensor_utils.split_tensor_dict_list(env_infos)
+            except AttributeError:
+                env_infos = None
+
             if env_infos is None:
                 env_infos = [dict() for _ in range(self.vec_env.num_envs)]
             if agent_infos is None:
@@ -87,8 +94,8 @@ class VectorizedSampler(BaseSampler):
                 running_paths[idx]["agent_infos"].append(agent_info)
                 if done:
                     paths.append(dict(
-                        observations=self.env_spec.observation_space.flatten_n(running_paths[idx]["observations"]),
-                        actions=self.env_spec.action_space.flatten_n(running_paths[idx]["actions"]),
+                        observations=running_paths[idx]["observations"],
+                        actions=running_paths[idx]["actions"],
                         rewards=tensor_utils.stack_tensor_list(running_paths[idx]["rewards"]),
                         env_infos=tensor_utils.stack_tensor_dict_list(running_paths[idx]["env_infos"]),
                         agent_infos=tensor_utils.stack_tensor_dict_list(running_paths[idx]["agent_infos"]),
