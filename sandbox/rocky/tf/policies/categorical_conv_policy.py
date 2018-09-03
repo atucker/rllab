@@ -32,7 +32,7 @@ class CategoricalConvPolicy(StochasticPolicy, LayersPowered, Serializable):
         """
         Serializable.quick_init(self, locals())
 
-        assert isinstance(env_spec.action_space, Discrete)
+        #assert isinstance(env_spec.action_space, Discrete)
 
         self._env_spec = env_spec
         # import pdb; pdb.set_trace()

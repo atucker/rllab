@@ -32,10 +32,16 @@ class NPO(BatchPolopt):
     @overrides
     def init_opt(self):
         is_recurrent = int(self.policy.recurrent)
-        obs_var = self.env.observation_space.new_tensor_variable(
-            'obs',
-            extra_dims=1 + is_recurrent,
-        )
+        #obs_var = self.env.observation_space.new_tensor_variable(
+        #    'obs',
+        #    extra_dims=1 + is_recurrent,
+        #)
+        #obs_var = tensor_utils.new_tensor(
+        #    'obs',
+        #    shape=[None] + [*self.policy.env_spec.observation_space.shape],
+        #    dtype=tf.float32
+        #)
+        obs_var = self.policy.act_model.X
         action_var = self.env.action_space.new_tensor_variable(
             'action',
             extra_dims=1 + is_recurrent,
